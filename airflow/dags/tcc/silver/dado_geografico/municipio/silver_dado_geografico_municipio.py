@@ -37,7 +37,7 @@ print('============!============!============!============!============!========
 
 print('   ')
 print('============!============!============!============!============!============!============!============!============')
-print('============ Abertura das listas e sublistas aninhadas de MICRORREGIAO e REGIAO-IMEDIATA em colunas para cada chave presente ============')
+print('============ Abertura das listas e sublistas aninhadas de MICRORREGIAO e REGIAO_IMEDIATA em colunas para cada chave presente ============')
 print('============!============!============!============!============!============!============!============!============')
 
 df_municipio_campos = (
@@ -53,16 +53,16 @@ df_municipio_campos = (
                        fn.col("microrregiao.mesorregiao.UF.regiao.id").alias('microregiao_mesoregiao_uf_regiao_id'),
                        fn.col("microrregiao.mesorregiao.UF.regiao.sigla").alias('microregiao_mesoregiao_uf_regiao_sigla'),
                        fn.col("microrregiao.mesorregiao.UF.regiao.nome").alias('microregiao_mesoregiao_uf_regiao_nome'),
-                       fn.col("regiao-imediata.id").alias('regiao_imediata_id'),
-                       fn.col("regiao-imediata.nome").alias('regiao_imediata_nome'),
-                       fn.col("regiao-imediata.regiao-intermediaria.id").alias('regiao_imediata_intermediaria_id'),
-                       fn.col("regiao-imediata.regiao-intermediaria.nome").alias('regiao_imediata_intermediaria_nome'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.id").alias('regiao_imediata_intermediaria_uf_id'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.sigla").alias('regiao_imediata_intermediaria_uf_sigla'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.nome").alias('regiao_imediata_intermediaria_uf_nome'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.regiao.id").alias('regiao_imediata_intermediaria_uf_regiao_id'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.regiao.sigla").alias('regiao_imediata_intermediaria_uf_regiao_sigla'),
-                       fn.col("regiao-imediata.regiao-intermediaria.UF.regiao.nome").alias('regiao_imediata_intermediaria_uf_regiao_nome')
+                       fn.col("regiao_imediata.id").alias('regiao_imediata_id'),
+                       fn.col("regiao_imediata.nome").alias('regiao_imediata_nome'),
+                       fn.col("regiao_imediata.regiao_intermediaria.id").alias('regiao_imediata_intermediaria_id'),
+                       fn.col("regiao_imediata.regiao_intermediaria.nome").alias('regiao_imediata_intermediaria_nome'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.id").alias('regiao_imediata_intermediaria_uf_id'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.sigla").alias('regiao_imediata_intermediaria_uf_sigla'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.nome").alias('regiao_imediata_intermediaria_uf_nome'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.regiao.id").alias('regiao_imediata_intermediaria_uf_regiao_id'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.regiao.sigla").alias('regiao_imediata_intermediaria_uf_regiao_sigla'),
+                       fn.col("regiao_imediata.regiao_intermediaria.UF.regiao.nome").alias('regiao_imediata_intermediaria_uf_regiao_nome')
                       )
                     )
 print('==========> df_municipio_campos.printSchema(): ', df_municipio_campos.printSchema())
