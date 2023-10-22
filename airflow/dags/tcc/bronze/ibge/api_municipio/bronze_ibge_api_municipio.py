@@ -96,12 +96,27 @@ print('============!============!============!============!============!========
 df_municipio.printSchema()
 print('============!============!============!============!============!============!============!============!============')
 
+
+print('   ')
+print('============!============!============!============!============!============!============!============!============')
+print('============ Ajuste de Nomes de Campos com traço para permitir leitura do Trino ============')
+print('============!============!============!============!============!============!============!============!============')
+
+df_municipio2 = df_municipio \
+    .withColumnRenamed("regiao-imediata", "regiao_imediata") \
+    .withColumn("regiao_imediata", 
+                col("regiao_imediata").cast("struct<id:int,nome:string,regiao_intermediaria:struct<id:int,nome:string,UF:struct<id:int,sigla:string,nome:string,regiao:struct<id:int,sigla:string,nome:string>>>>"))
+
+# Selecionando apenas os campos desejados
+df_municipio3 = df_municipio2.select("id", "nome", "microrregiao", "regiao_imediata")
+
+
 print('   ')
 print('============!============!============!============!============!============!============!============!============')
 print('============ Gravando Dados na CAMADA BRONZE  ============')
 print('============!============!============!============!============!============!============!============!============')
 
-(df_municipio
+(df_municipio3
  .write
  .format('parquet')
  .mode('overwrite')
