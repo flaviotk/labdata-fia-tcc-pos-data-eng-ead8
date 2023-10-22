@@ -105,7 +105,7 @@ df_fluxo_educ_superior_estmun = (df_fluxo_educ_superior.alias('educ')
              fn.col('educ.NU_PRAZO_ACOMPANHAMENTO').alias('prazo_acompanhamento_curso_anos'),
              fn.col('educ.NU_ANO_MAXIMO_ACOMPANHAMENTO').alias('ano_maximo_acompanhamento_curso'),
              fn.col('educ.QT_INGRESSANTE').alias('quantidade_ingressante_curso'),
-             fn.col('educ.QT_PERMANENCIA').alias('quantidade_permanência_curso_ano_referencia'),
+             fn.col('educ.QT_PERMANENCIA').alias('quantidade_permanencia_curso_ano_referencia'),
              fn.col('educ.QT_CONCLUINTE').alias('quantidade_concluinte_curso_ano_referencia'),
              fn.col('educ.QT_DESISTENCIA').alias('quantidade_desistencia_curso_ano_referencia'),
              fn.col('educ.QT_FALECIDO').alias('quantidade_falecimento_curso_ano_referencia'),
