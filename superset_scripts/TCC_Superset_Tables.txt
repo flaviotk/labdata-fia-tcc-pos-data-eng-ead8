@@ -1,0 +1,221 @@
+CREATE SCHEMA IF NOT EXISTS bronze;
+CREATE SCHEMA IF NOT EXISTS silver;
+CREATE SCHEMA IF NOT EXISTS gold;
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS bronze.ibge_estado ( 
+  id VARCHAR,
+  nome VARCHAR, 
+  regiao ROW(
+              nome VARCHAR, 
+              sigla VARCHAR,
+              id VARCHAR
+           ),
+  sigla VARCHAR
+) 
+WITH ( external_location = 's3a://bronze/ibge/estado', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS bronze.ibge_municipio ( 
+  id BIGINT,
+  nome VARCHAR, 
+  microrregiao ROW(
+    id BIGINT,
+    nome VARCHAR,
+    mesorregiao ROW(
+      id BIGINT,
+      nome VARCHAR,
+      UF ROW(
+        id INT,
+        sigla VARCHAR,
+        nome VARCHAR,
+        regiao ROW(
+          id INT,
+          sigla VARCHAR,
+          nome VARCHAR
+        )
+      )
+    )
+  ),
+  regiao_imediata ROW(
+    id BIGINT,
+    nome VARCHAR,
+    regiao_intermediaria ROW(
+      id BIGINT,
+      nome VARCHAR,
+      UF ROW(
+        id INT,
+        sigla VARCHAR,
+        nome VARCHAR,
+        regiao ROW(
+          id INT,
+          sigla VARCHAR,
+          nome VARCHAR
+        )
+      )
+    )
+  )
+) 
+WITH ( external_location = 's3a://bronze/ibge/municipio', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS tmp.bronze_indicadores_fluxo_educacao_superior1 ( 
+  CO_IES BIGINT,
+  NO_IES VARCHAR, 
+  TP_CATEGORIA_ADMINISTRATIVA INT,
+  TP_ORGANIZACAO_ACADEMICA INT,
+  CO_CURSO BIGINT,
+  NO_CURSO VARCHAR,
+  CO_REGIAO INT,
+  CO_UF INT,
+  CO_MUNICIPIO BIGINT,
+  TP_GRAU_ACADEMICO INT,
+  TP_MODALIDADE_ENSINO INT,
+  CO_CINE_ROTULO VARCHAR,
+  NO_CINE_ROTULO VARCHAR,
+  CO_CINE_AREA_GERAL INT,
+  NO_CINE_AREA_GERAL VARCHAR,
+  NU_ANO_INGRESSO INT,
+  NU_ANO_REFERENCIA INT,
+  NU_PRAZO_INTEGRALIZACAO INT,
+  NU_ANO_INTEGRALIZACAO INT,
+  NU_PRAZO_ACOMPANHAMENTO INT,
+  NU_ANO_MAXIMO_ACOMPANHAMENTO INT,
+  QT_INGRESSANTE BIGINT,
+  QT_PERMANENCIA BIGINT,
+  QT_CONCLUINTE BIGINT,
+  QT_DESISTENCIA BIGINT,
+  QT_FALECIDO BIGINT,
+  TAP DOUBLE,
+  TCA DOUBLE,
+  TDA DOUBLE,
+  TCAN DOUBLE,
+  TADA DOUBLE
+) 
+WITH ( external_location = 's3a://bronze/inep/educacao_superior/indicadores_fluxo_educacao_superior', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS silver.estado ( 
+  estado_id INT,
+  estado_nome VARCHAR,
+  estado_sigla VARCHAR,
+  regiao_id INT,
+  regiao_nome VARCHAR,
+  regiao_sigla VARCHAR
+) 
+WITH ( external_location = 's3a://silver/dado_geografico/estado', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS silver.municipio ( 
+  municipio_id BIGINT,
+  municipio_nome VARCHAR,
+  microregiao_id BIGINT,
+  microregiao_nome VARCHAR,
+  microregiao_mesoregiao_id BIGINT,
+  microregiao_mesoregiao_nome VARCHAR,
+  microregiao_mesoregiao_uf_id INT,
+  microregiao_mesoregiao_uf_sigla VARCHAR,
+  microregiao_mesoregiao_uf_nome VARCHAR,
+  microregiao_mesoregiao_uf_regiao_id INT,
+  microregiao_mesoregiao_uf_regiao_sigla VARCHAR,
+  microregiao_mesoregiao_uf_regiao_nome VARCHAR,
+  regiao_imediata_id INT,
+  regiao_imediata_nome VARCHAR,
+  regiao_imediata_intermediaria_id INT,
+  regiao_imediata_intermediaria_nome VARCHAR,
+  regiao_imediata_intermediaria_uf_id INT,
+  regiao_imediata_intermediaria_uf_sigla VARCHAR,
+  regiao_imediata_intermediaria_uf_nome VARCHAR,
+  regiao_imediata_intermediaria_uf_regiao_id INT,
+  regiao_imediata_intermediaria_uf_regiao_sigla VARCHAR,
+  regiao_imediata_intermediaria_uf_regiao_nome VARCHAR
+) 
+WITH ( external_location = 's3a://silver/dado_geografico/municipio', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS silver.indicador_fluxo_educacao_superior ( 
+	codigo_instituicao BIGINT,
+	nome_instituicao VARCHAR,
+	categoria_administrativa INT,
+	organizacao_academica INT,
+	codigo_curso_graduacao BIGINT,
+	nome_curso_graduacao VARCHAR,
+	codigo_regiao_geografica_curso INT,
+	nome_regiao_geografica_curso VARCHAR,
+	codigo_unidade_federativa_curso INT,
+	nome_unidade_federativa_curso VARCHAR,
+	codigo_municipio_curso BIGINT,
+	nome_municipio_curso VARCHAR,
+	tipo_grau_academico INT,
+	tipo_modalidade_ensino INT,
+	codigo_area_curso_classificacao_cine_brasil VARCHAR,
+	nome_area_curso_classificacao_cine_brasil VARCHAR,
+	codigo_grande_area_curso_classificacao_cine_brasil INT,
+	nome_grande_area_curso_classificacao_cine_brasil VARCHAR,
+	ano_ingresso INT,ano_referencia INT,
+	prazo_INTegralizacao_anos INT,
+	ano_INTegralizacao_curso INT,
+	prazo_acompanhamento_curso_anos INT,
+	ano_maximo_acompanhamento_curso INT,
+	quantidade_ingressante_curso BIGINT,
+	quantidade_permanencia_curso_ano_referencia BIGINT,
+	quantidade_concluinte_curso_ano_referencia BIGINT,
+	quantidade_desistencia_curso_ano_referencia BIGINT,
+	quantidade_falecimento_curso_ano_referencia BIGINT,
+	taxa_permanencia_tap DOUBLE,
+	taxa_conclusao_acumulada_tca DOUBLE,
+	taxa_desistencia_acumulada_tda DOUBLE,
+	taxa_conclusso_anual_tcan DOUBLE,
+	taxa_desistencia_anual_tada DOUBLE
+) 
+WITH ( external_location = 's3a://silver/educacao_superior/indicadores_fluxo_educacao_superior', format = 'PARQUET' )
+
+--------------------------------------------------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS gold.indicador_fluxo_educacao_superior ( 
+    codigo_instituicao BIGINT,
+    nome_instituicao VARCHAR,
+    codigo_categoria_administrativa INT,
+    nome_categoria_administrativa VARCHAR,
+    codigo_organizacao_academica INT,
+    nome_organizacao_academica VARCHAR,
+    codigo_curso_graduacao BIGINT,
+    nome_curso_graduacao VARCHAR,
+    codigo_regiao_geografica_curso INT,
+    nome_regiao_geografica_curso VARCHAR,
+    codigo_unidade_federativa_curso INT,
+    nome_unidade_federativa_curso VARCHAR,
+    codigo_municipio_curso BIGINT,
+    nome_municipio_curso VARCHAR,
+    codigo_tipo_grau_academico INT,
+    nome_tipo_grau_academico VARCHAR,
+    codigo_tipo_modalidade_ensino INT,
+    nome_tipo_modalidade_ensino VARCHAR,
+    codigo_area_curso_classificacao_cine_brasil VARCHAR,
+    nome_area_curso_classificacao_cine_brasil VARCHAR,
+    codigo_grande_area_curso_classificacao_cine_brasil INT,
+    nome_grande_area_curso_classificacao_cine_brasil VARCHAR,
+    ano_ingresso INT,
+    ano_referencia INT,
+    prazo_integralizacao_anos INT,
+    ano_integralizacao_curso INT,
+    prazo_acompanhamento_curso_anos INT,
+    ano_maximo_acompanhamento_curso INT,
+    quantidade_ingressante_curso BIGINT,
+    quantidade_permanencia_curso_ano_referencia BIGINT,
+    quantidade_concluinte_curso_ano_referencia BIGINT,
+    quantidade_desistencia_curso_ano_referencia BIGINT,
+    quantidade_falecimento_curso_ano_referencia BIGINT,
+    taxa_permanencia_tap DOUBLE,
+    taxa_conclusao_acumulada_tca DOUBLE,
+    taxa_desistencia_acumulada_tda DOUBLE,
+    taxa_conclusso_anual_tcan DOUBLE,
+    taxa_desistencia_anual_tada DOUBLE
+) 
+WITH ( external_location = 's3a://gold/educacao_superior/indicadores_fluxo_educacao_superior', format = 'PARQUET' )
